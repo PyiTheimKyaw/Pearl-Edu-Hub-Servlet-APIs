@@ -68,7 +68,7 @@ public class DashboardCreateLiveSessionApi extends HttpServlet {
 					preStmt.setString(3, request.getParameter("date"));
 					preStmt.setString(4, request.getParameter("meet_url"));
 					preStmt.setString(5, request.getParameter("lecture_ids"));
-					preStmt.setString(6, " ");
+					preStmt.setString(6, new Timestamp(System.currentTimeMillis()).toString());
 					preStmt.setInt(7, Integer.parseInt(request.getParameter("class_id")));
 					int row = preStmt.executeUpdate();
 					if (row > 0) {

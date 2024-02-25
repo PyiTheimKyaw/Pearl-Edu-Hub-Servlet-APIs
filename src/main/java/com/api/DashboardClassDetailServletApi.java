@@ -41,11 +41,14 @@ public class DashboardClassDetailServletApi extends HttpServlet {
 			Connection connection = DatabaseConnection.getConnection();
 			String sqlQuery = "SELECT c.class_id, c.class_name, c.class_information, c.start_date, c.end_date, c.fees, "
 					+ "l.id AS lecture_id, l.name AS lecture_name, " + "stu.stu_id, stu.stu_name, stu.stu_email, "
-					+ "tr.id AS transaction_id, tr.payment_type_id, tr.created_at, tr.amount " + "FROM classes c "
-					+ "INNER JOIN class_lecture cl ON c.class_id = cl.class_id "
+					+ "tr.id AS transaction_id, tr.payment_type_id, tr.created_at, tr.amount, "
+					+ "live.id AS live_id, live.date AS live_start_date, live.start_time,live.end_time,live.lecture_ids AS live_lecture_ids,live.meet_url,live.class_id AS live_class_id,live.created_at as live_created_at "
+					+ "FROM classes c " + "INNER JOIN class_lecture cl ON c.class_id = cl.class_id "
 					+ "INNER JOIN transactions tr ON c.class_id = tr.class_id "
 					+ "INNER JOIN student stu ON tr.student_id = stu.stu_id "
-					+ "INNER JOIN lectures l ON cl.lecture_id = l.id " + "WHERE c.class_id = ?";
+					+ "INNER JOIN lectures l ON cl.lecture_id = l.id "
+					+ "INNER JOIN live_session live ON c.class_id = live.class_id " + "WHERE c.class_id = ?";
+
 			PreparedStatement statement = connection.prepareStatement(sqlQuery);
 			statement.setInt(1, Integer.parseInt(request.getParameter("class_id")));
 			ResultSet resultSet = statement.executeQuery();
@@ -63,8 +66,9 @@ public class DashboardClassDetailServletApi extends HttpServlet {
 					List<LectureModel> lectures = new ArrayList<>();
 					List<StudentModel> students = new ArrayList<>();
 					List<EnrollmentModel> enrollments = new ArrayList<>();
+					List<LiveSessionModel> liveSessions = new ArrayList<>();
 					classMap.put(classId, new ClassModel(classId, className, lectures, classInfo, startDate, endDate,
-							fees, students, enrollments));
+							fees, students, enrollments, liveSessions));
 				}
 
 				int lectureId = resultSet.getInt("lecture_id");
@@ -82,6 +86,16 @@ public class DashboardClassDetailServletApi extends HttpServlet {
 
 					classMap.get(classId).getEnrollments().add(student);
 				}
+
+				if (!isDuplicate(classMap.get(classId).getLiveSessions(), resultSet.getInt("live_id"))) {
+					LiveSessionModel liveSessin = new LiveSessionModel(resultSet.getInt("live_id"),
+							resultSet.getString("live_start_date"), resultSet.getString("start_time"),
+							resultSet.getString("end_time"), resultSet.getString("live_lecture_ids"),
+							resultSet.getString("meet_url"), resultSet.getInt("live_class_id"),
+							resultSet.getString("live_created_at"));
+					classMap.get(classId).getLiveSessions().add(liveSessin);
+				}
+
 			}
 
 			// Close resources
@@ -112,6 +126,8 @@ public class DashboardClassDetailServletApi extends HttpServlet {
 			if (obj instanceof LectureModel && ((LectureModel) obj).getId() == id) {
 				return true;
 			} else if (obj instanceof EnrollmentModel && ((EnrollmentModel) obj).getId() == id) {
+				return true;
+			} else if (obj instanceof LiveSessionModel && ((LiveSessionModel) obj).getId() == id) {
 				return true;
 			}
 		}

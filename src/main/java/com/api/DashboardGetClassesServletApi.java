@@ -57,7 +57,7 @@ public class DashboardGetClassesServletApi extends HttpServlet {
 				// If the class is not yet in the map, add it
 				if (!classMap.containsKey(classId)) {
 					classMap.put(classId, new ClassModel(classId, className, new ArrayList<>(), classInfo, startDate,
-							endDate, fees, new ArrayList<>(), new ArrayList<>()));
+							endDate, fees, new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
 				}
 
 				// Add lecture info to the class

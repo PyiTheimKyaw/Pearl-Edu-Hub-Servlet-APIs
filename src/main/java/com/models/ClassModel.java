@@ -12,10 +12,11 @@ public class ClassModel {
 	private List<LectureModel> lectures;
 	private List<StudentModel> students;
 	private List<EnrollmentModel> enrollments;
+	private List<LiveSessionModel> liveSessions;
 
 	// Constructor
 	public ClassModel(int id, String class_name, List<LectureModel> lectures, String classInfo, String startDate,
-			String endDate, double fees, List<StudentModel> students,List<EnrollmentModel> enrollments) {
+			String endDate, double fees, List<StudentModel> students,List<EnrollmentModel> enrollments,List<LiveSessionModel> liveSessions) {
 		this.id = id;
 		this.class_name = class_name;
 		this.lectures = lectures;
@@ -25,6 +26,7 @@ public class ClassModel {
 		this.fees = fees;
 		this.students = students;
 		this.enrollments = enrollments;
+		this.liveSessions = liveSessions;
 	}
 
 	public int getId() {
@@ -98,6 +100,16 @@ public class ClassModel {
 	public void setEnrollments(List<EnrollmentModel> enrollments) {
 		this.enrollments = enrollments;
 	}
+
+	public List<LiveSessionModel> getLiveSessions() {
+		return liveSessions;
+	}
+
+	public void setLiveSessions(List<LiveSessionModel> liveSessions) {
+		this.liveSessions = liveSessions;
+	}
+
+	
 
 	
 
