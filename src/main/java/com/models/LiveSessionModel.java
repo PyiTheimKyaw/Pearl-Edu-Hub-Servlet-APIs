@@ -1,6 +1,7 @@
 package com.models;
 
 public class LiveSessionModel {
+	private String live_title;
 	private int id;
 	private String date;
 	private String start_time;
@@ -10,9 +11,10 @@ public class LiveSessionModel {
 	private int class_id;
 	private String created_at;
 
-	public LiveSessionModel(int id, String date, String start_time, String end_time, String lecture_ids,
-			String meet_url, int class_id, String created_at) {
+	public LiveSessionModel(String live_title, int id, String date, String start_time, String end_time,
+			String lecture_ids, String meet_url, int class_id, String created_at) {
 		super();
+		this.live_title = live_title;
 		this.id = id;
 		this.date = date;
 		this.start_time = start_time;
@@ -21,6 +23,14 @@ public class LiveSessionModel {
 		this.meet_url = meet_url;
 		this.class_id = class_id;
 		this.created_at = created_at;
+	}
+
+	public String getLive_title() {
+		return live_title;
+	}
+
+	public void setLive_title(String live_title) {
+		this.live_title = live_title;
 	}
 
 	public String getCreated_at() {

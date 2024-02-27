@@ -47,7 +47,7 @@ public class DashboardCreateLiveSessionApi extends HttpServlet {
 			if (paramValues == null || paramValues.length == 0 || paramValues[0].isEmpty()) {
 				anyParamNull = true;
 				jsonRes.put(entry.getKey(), "You need to fill " + entry.getKey());
-			
+
 			}
 		}
 
@@ -59,8 +59,9 @@ public class DashboardCreateLiveSessionApi extends HttpServlet {
 			// Write JSON response to output stream
 			out.print(liveSessionJson);
 		} else {
-			String sqlQuery = "insert into live_session (start_time,end_time,date,meet_url,lecture_ids,created_at,class_id) values (?,?,?,?,?,?,?)";
+			String sqlQuery = "insert into live_session (start_time,end_time,date,meet_url,lecture_ids,created_at,class_id,live_title) values (?,?,?,?,?,?,?,?)";
 			try (Connection connection = DatabaseConnection.getConnection()) {
+				Thread.sleep(2000);
 				try (PreparedStatement preStmt = connection.prepareStatement(sqlQuery)) {
 					// Set parameters for insertion
 					preStmt.setString(1, request.getParameter("start_time"));
@@ -70,6 +71,7 @@ public class DashboardCreateLiveSessionApi extends HttpServlet {
 					preStmt.setString(5, request.getParameter("lecture_ids"));
 					preStmt.setString(6, new Timestamp(System.currentTimeMillis()).toString());
 					preStmt.setInt(7, Integer.parseInt(request.getParameter("class_id")));
+					preStmt.setString(8, request.getParameter("live_title"));
 					int row = preStmt.executeUpdate();
 					if (row > 0) {
 						Map<String, Object> jsonResponse = new HashMap<>();
