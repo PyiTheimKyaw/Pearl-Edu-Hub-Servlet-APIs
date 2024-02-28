@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +140,82 @@ public class DashboardClassDetailServletApi extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+
+		// TODO Auto-generated method stub
+		String class_name = request.getParameter("class_name");
+		String start_date = request.getParameter("start_date");
+		String end_date = request.getParameter("end_date");
+		String class_information = request.getParameter("class_information");
+		String fees = request.getParameter("fees");
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+		response.setHeader("Content-Type", "application/json");
+		PrintWriter out = response.getWriter();
+		String sqlQuery = "update classes set class_name =? ,start_date =?,end_date =?,class_information =? ,fees =? where class_id=?";
+		String deleteLectureFromClassQuery = "delete from class_lecture where class_id = "
+				+ request.getParameter("class_id");
+		String query = "INSERT INTO class_lecture(class_id, lecture_id) VALUES (?, ?)";
+		try (Connection connection = DatabaseConnection.getConnection()) {
+			// SQL query to insert a new class into the database
+//            String query = "INSERT INTO classes (title, price, lectures_id) VALUES (?, ?, ?)";
+
+			try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery,
+					PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+				PreparedStatement preparedStatement2 = connection.prepareStatement(query);
+				preparedStatement.setString(1, class_name);
+				preparedStatement.setString(2, start_date);
+				preparedStatement.setString(3, end_date);
+				preparedStatement.setString(4, class_information);
+				preparedStatement.setDouble(5, Double.parseDouble(fees));
+				preparedStatement.setInt(6, Integer.parseInt(request.getParameter("class_id")));
+				System.out.println("Lecture list 1 is" + request.getParameter("lecture_ids") + "next"
+						+ request.getParameter("lecture_ids[]") + "THEN" + request.getPathInfo());
+				String lecturesIdsStr = request.getParameter("lecture_ids");
+				List<String> lecturesIdsList = Arrays.asList(lecturesIdsStr.split(","));
+				System.out
+						.println("Lecture list is" + lecturesIdsList.toString() + request.getParameter("lecture_ids[]")
+								+ "next" + request.getParameter("lecture_ids[]") + "THEN" + request.getPathInfo());
+				int deleteLectureRow = connection.prepareStatement(deleteLectureFromClassQuery).executeUpdate();
+				int row = preparedStatement.executeUpdate();
+
+				if (row > 0) {
+//					ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+//					if (generatedKeys.next()) {
+//						int classId = generatedKeys.getInt(1);
+					for (String lectureIdStr : lecturesIdsList) {
+						int lecturesId = Integer.parseInt(lectureIdStr);
+						preparedStatement2.setInt(1, Integer.parseInt(request.getParameter("class_id")));
+						preparedStatement2.setInt(2, lecturesId);
+						preparedStatement2.addBatch();
+					}
+					// Execute the batch insert
+					int[] rowsInserted = preparedStatement2.executeBatch();
+
+					// Check the number of rows inserted
+					int totalRowsInserted = 0;
+					for (int rows : rowsInserted) {
+						totalRowsInserted += rows;
+					}
+					if (totalRowsInserted == lecturesIdsList.size()) {
+						Map<String, Object> jsonResponse = new HashMap<>();
+						jsonResponse.put("msg", "Updated class successfully");
+						jsonResponse.put("status", "success");
+						Gson gson = new Gson();
+						String employeeJson = gson.toJson(jsonResponse);
+						// Write JSON response to output stream
+						out.print(employeeJson);
+					} else {
+						out.print("{\"msg\": \"Failed to update class\"}");
+					}
+//					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new ServletException(e);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 }
