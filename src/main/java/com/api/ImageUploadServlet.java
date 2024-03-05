@@ -28,9 +28,10 @@ public class ImageUploadServlet extends HttpServlet {
         try (Connection conn = DatabaseConnection.getConnection()) {
             Part filePart = request.getPart("image");
             InputStream inputStream = filePart.getInputStream();
-            String sql = "INSERT INTO images (image_data) VALUES (?)";
+            String sql = "INSERT INTO images (image_data,file_name) VALUES (?,?)";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setBlob(1, inputStream);
+                statement.setString(2, request.getParameter("file_name"));
                 statement.executeUpdate();
                 response.getWriter().print("Image uploaded successfully");
             } catch (SQLException e) {

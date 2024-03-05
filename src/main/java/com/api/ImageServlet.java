@@ -38,6 +38,7 @@ public class ImageServlet extends HttpServlet {
                 statement.setInt(1, imageId);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
+                    	System.out.print("Image data"+resultSet.getBlob("image_data"));
                         response.setContentType("image/jpeg"); // Set the appropriate content type
                         try (OutputStream out = response.getOutputStream()) {
                             out.write(resultSet.getBytes("image_data"));
