@@ -30,7 +30,10 @@ public class ImageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int imageId = Integer.parseInt(request.getParameter("id")); // Assuming you pass the image ID as a parameter
+        int imageId = Integer.parseInt(request.getParameter("id")); 
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");// Assuming you pass the image ID as a parameter
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "SELECT image_data FROM images WHERE id = ?";

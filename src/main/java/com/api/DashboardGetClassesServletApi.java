@@ -24,12 +24,24 @@ public class DashboardGetClassesServletApi extends HttpServlet {
 				+ "INNER JOIN lectures l ON cl.lecture_id = l.id";
 
 		// Set content type and character encoding
-//		response.setContentType("application/json");
 //		response.setCharacterEncoding("UTF-8");
+//		response.setHeader("Access-Control-Allow-Origin", "https://pyitheimkyaw.github.io/");
+////		response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+////		response.setHeader("Access-Control-Max-Age", "86400");
+//		response.setHeader("Content-Type", "application/json");
+		
+		// Allow specific HTTP methods
+//		response.setHeader("Access-Control-Allow-Origin", "https://pyitheimkyaw.github.io/");
+//		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//
+//        // Allow specific headers
+//		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//
+//        // Allow credentials (if needed)
+//		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Origin", "*");
-//		response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//		response.setHeader("Access-Control-Max-Age", "86400");
 		response.setHeader("Content-Type", "application/json");
 
 		PrintWriter out = response.getWriter();
